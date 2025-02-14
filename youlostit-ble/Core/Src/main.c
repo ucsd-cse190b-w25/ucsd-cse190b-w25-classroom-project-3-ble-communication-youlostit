@@ -75,7 +75,7 @@ int main(void)
 
 /**
   * @brief System Clock Configuration
-  * @attention This changes the System clock frequency to 16MHz, make sure you reflect that change in your timer
+  * @attention This changes the System clock frequency, make sure you reflect that change in your timer
   * @retval None
   */
 void SystemClock_Config(void)
@@ -96,6 +96,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
   RCC_OscInitStruct.MSIState = RCC_MSI_ON;
   RCC_OscInitStruct.MSICalibrationValue = 0;
+  // This lines changes system clock frequency
   RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_7;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
