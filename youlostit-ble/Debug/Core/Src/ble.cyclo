@@ -1,0 +1,11 @@
+../Core/Src/ble.c:37:6:ble_init	9
+../Core/Src/ble.c:109:6:standbyBle	1
+../Core/Src/ble.c:116:5:fetchBleEvent	5
+../Core/Src/ble.c:168:5:checkEventResp	3
+../Core/Src/ble.c:182:6:sendCommand	3
+../Core/Src/ble.c:208:6:catchBLE	3
+../Core/Src/ble.c:219:6:setConnectable	4
+../Core/Src/ble.c:258:5:BLE_command	4
+../Core/Src/ble.c:283:6:addService	2
+../Core/Src/ble.c:296:6:addCharacteristic	2
+../Core/Src/ble.c:310:6:updateCharValue	1
