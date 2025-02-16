@@ -17,7 +17,7 @@
  * Events:
  * Bytes | Description
  * 0	 | HCI Packet Type (Indicates this is a command packet) (0x01 is command, 0x04 is event)
-   1	 | Event Code (Command Complete is 0x0E, 0xFF Command)
+   1	 | Event Code (Command Complete is 0x0E)
    2	 | Parameter Length (n bytes follow this field)
    3	 | Number of HCI Command Packets Allowed
    4-5	 | Opcode of Command sent (Little Endian format)

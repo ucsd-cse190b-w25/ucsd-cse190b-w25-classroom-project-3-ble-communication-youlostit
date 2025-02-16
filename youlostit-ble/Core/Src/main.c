@@ -56,11 +56,11 @@ int main(void)
 
   HAL_Delay(10);
 
-  uint8_t standby = 0;
+  uint8_t nonDiscoverable = 0;
 
   while (1)
   {
-	  if(!standby && HAL_GPIO_ReadPin(BLE_INT_GPIO_Port,BLE_INT_Pin)){
+	  if(!nonDiscoverable && HAL_GPIO_ReadPin(BLE_INT_GPIO_Port,BLE_INT_Pin)){
 	    catchBLE();
 	  }else{
 		  HAL_Delay(1000);
