@@ -208,22 +208,24 @@ void sendCommand(uint8_t *command,int size){
 
 }
 
-void catchBLE(){
-      int result=fetchBleEvent(buffer,127);
-	  if(result==BLE_OK){
-		  if(checkEventResp(buffer,EVENT_DISCONNECTED,3)==BLE_OK){
-			  // This automatically sets your device to be discoverable
-			  // as soon as it disconnects from a device
-			  setConnectable();
-		  }
-		  if(checkEventResp(buffer, EVENT_CONNECTED, 5)==BLE_OK){
-			  // Little Endian Format
-			  *(connectionHandler) = buffer[5];
-			  *(connectionHandler + 1) = buffer[6];
-		  }
-	  }else{
-		  //something bad is happening if I am here
-	  }
+void catchBLE(uint8_t * byte1, uint8_t * byte2){
+	int result=fetchBleEvent(buffer,127);
+	if(result==BLE_OK){
+		if(checkEventResp(buffer,EVENT_DISCONNECTED,3)==BLE_OK){
+			//setConnectable();
+		}
+		if(checkEventResp(buffer, EVENT_CONNECTED, 5)==BLE_OK){
+			// Little Endian Format
+			*(connectionHandler) = buffer[5];
+			*(connectionHandler + 1) = buffer[6];
+		}
+		if (checkEventResp(buffer, EVENT_GATT_CHANGED, 6)){
+			*(connectionHandler) = buffer[5];
+			*(connectionHandler + 1) = buffer[6];
+		}
+	}else{
+		//something bad is happening if I am here
+	}
 }
 
 void setConnectable(){
@@ -356,21 +358,26 @@ void updateCharValue(uint8_t* handleService,uint8_t* handleChar, int offset, int
  * @brief Disconnects the peripheral from the central
 */
 void disconnectBLE(){
-	 if (connectionHandler[0] == -1 && connectionHandler[1] == -1){
-		// should not be -1. If -1, then no connection was made at the first place!
-		return;
-	 }
-	 uint8_t command[7];
-	 memcpy(command, DISCONNECT, 4);
-	 command[4] = connectionHandler[0];
-	 command[5] = connectionHandler[1];
-	 command[6] = 0x13;
-	 if(BLE_command(command,sizeof(command),EVENT_DISCONNECTED,3,0)==BLE_OK){
-		connectionHandler[0] = -1;
-		connectionHandler[1] = -1;
-	 }
-	 free(rxEvent);
-
+	if (connectionHandler[0] == -1 && connectionHandler[1] == -1){
+	   // should not be -1
+	   return;
+	}
+	uint8_t command[7];
+	memcpy(command, DISCONNECT, 4);
+	command[4] = connectionHandler[0];
+	command[5] = connectionHandler[1];
+	command[6] = 0x13;
+	if(BLE_command(command,sizeof(command),EVENT_DISCONNECT_PENDING,7,0)==BLE_OK){
+		int result=fetchBleEvent(buffer,127);
+		if(result==BLE_OK){
+			 if(checkEventResp(buffer,EVENT_DISCONNECTED,4)==BLE_OK){
+				 //setConnectable();
+				 connectionHandler[0] = -1;
+				 connectionHandler[1] = -1;
+			 }
+		}
+	free(rxEvent);
+	}
 }
 
 /**
@@ -383,8 +390,9 @@ void setDiscoverability(uint8_t mode){
 		setConnectable();
 	}
 	else if (mode == 0){
-		if(BLE_command(ACI_GAP_SET_NON_DISCOVERABLE,sizeof(ACI_GAP_SET_NON_DISCOVERABLE),
-		ACI_GAP_SET_NON_DISCOVERABLE_COMPLETE,sizeof(ACI_GAP_SET_NON_DISCOVERABLE_COMPLETE),0)==BLE_OK){}
+		if(BLE_command(ACI_GAP_SET_NON_DISCOVERABLE,sizeof(ACI_GAP_SET_NON_DISCOVERABLE),ACI_GAP_SET_NON_DISCOVERABLE_COMPLETE,sizeof(ACI_GAP_SET_NON_DISCOVERABLE_COMPLETE),0)==BLE_OK){
+		}
+		free(rxEvent);
 	}
 	else{
 		// Do nothing

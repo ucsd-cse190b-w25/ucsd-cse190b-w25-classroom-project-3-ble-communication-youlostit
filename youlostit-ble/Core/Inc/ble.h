@@ -48,4 +48,8 @@ void addService(uint8_t* UUID, uint8_t* handle, int attributes);
 void addCharacteristic(uint8_t* UUID,uint8_t* handleChar, uint8_t* handleService, uint8_t maxsize, uint8_t proprieties);
 
 void updateCharValue(uint8_t* handleService,uint8_t* handleChar, int offset, int size,uint8_t* data);
+
+void disconnectBLE();
+
+void setDiscoverability(uint8_t mode);
 #endif
